@@ -2,4 +2,4 @@
 plot 
 ## How to write R script
 
-*   [kickstarting R](ftp://cran.r-project.org/pub/R/doc/contrib/Lemon-kickstart/kr_scrpt.html)
+* [kickstarting R](http://bit.ly/2e4RATc)
