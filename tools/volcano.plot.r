@@ -1,4 +1,8 @@
 #!/usr/bin/env Rscript
+
+#./volcano.plot.r ../result/10262016/LPS/WT-1/xxx.csv
+#../result/10262016/LPS/WT-1/xxx.csv.pdf
+
 args = commandArgs(trailingOnly=TRUE)
 # test if there is at least one argument: if not, return an error
 if (length(args)==0) {
