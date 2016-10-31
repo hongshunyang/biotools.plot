@@ -15,7 +15,9 @@ APP_TOOLS_RESULT_DIRNAME = '_result'
 APP_DATA_DIRNAME = 'data'
 APP_RESULT_DIRNAME = 'result'
 
-
+def usage():
+    print('get columns data from single file or directory')
+    print('./app.py -i ../data/10262016 -c 0,1,2,3,4,5,6,7,8,9,10,17,18,19')
 
 def getDataFromCSV(title,spliter,filePath):
 	print("reading data from csv file:%s" % filePath)
@@ -157,7 +159,7 @@ def main():
         opts,args = getopt.getopt(sys.argv[1:],"hi:c:",["--input=","--columns="])
     except getopt.GetoptError as err:
         print(err) 
-        # usage()
+        usage()
         sys.exit(2)
 
     input_data=""	
@@ -168,7 +170,7 @@ def main():
 
     for opt,arg in opts:
         if opt in ('-h',"--help"):
-	    # usage()
+            usage()
             sys.exit()
         elif opt in ('-i','--input'):
             input_data=arg
