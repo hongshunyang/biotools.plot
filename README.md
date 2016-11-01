@@ -11,7 +11,7 @@
 
 > support batch
 
-* volcano
+* plot()
 
 ## How to write R script
 
