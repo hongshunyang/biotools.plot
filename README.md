@@ -16,3 +16,7 @@
 ## How to write R script
 
 * [Manuals](https://cran.r-project.org/manuals.html)
+
+# Screen shot
+
+![screen](./screenshot.png)
