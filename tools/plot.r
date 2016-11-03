@@ -55,48 +55,63 @@ option_list = list(
 opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser)
 
-if (is.null(opt$input)) {
+
+opt_i = opt$i
+opt_c = opt$c;
+opt_x = opt$x;
+opt_y = opt$y;
+opt_m = tolower(opt$m);
+
+
+
+if (is.null(opt_i)) {
     print_help(opt_parser)
     stop("at least one argument must be supplied (input directory).n", call.=FALSE);
 }
 
-# args[1] directory
-fls = list.files(opt$input,pattern='*.csv',full.names=TRUE,recursive=TRUE);
-mod = tolower(opt$mode);
 
-img_main = ""
-img_xlab = ""
-img_ylab = ""
+rplot <- function(opt_i,opt_c,opt_x,opt_y,opt_m){
 
-for (fl in fls){
-    res = read.table(fl, header=TRUE);
-    head(res);
-    pdf(paste('_result/',basename(fl),'.pdf',sep=''),width=60,height=40);
+    fls = list.files(opt_i,pattern='*.csv',full.names=TRUE,recursive=TRUE);
+
+    img_main = ""
+    img_xlab = ""
+    img_ylab = ""
+
+    for (fl in fls){
+        res = read.table(fl, header=TRUE);
+        head(res);
+        pdf(paste('_result/',basename(fl),'.pdf',sep=''),width=60,height=40);
     # mgp = c(3,4,0):4->xlab(ylab) and x(y) axes distance 
     # mai image margin pdf 
-    par(mai=c(5,5,5,5),mgp=c(3, 3, 0));
+        par(mai=c(5,5,5,5),mgp=c(3, 3, 0));
 
-    if (mod=='nlog10csqrtf') {
+        if (opt_m=='nlog10csqrtf') {
         ## -x -log10  the negative - can not work with -x
-        opt$x = '-log10(Coverage)';
-        opt$y = 'sqrt(Frequency)';
-    } else if (mod=='nlog10flog2c'){
-        opt$x = "-log10(Frequency)";
-        opt$y = "log2(Coverage)";
-    } else {
+            opt_x = '-log10(Coverage)';
+            opt_y = 'sqrt(Frequency)';
+        } else if (opt_m=='nlog10flog2c'){
+            opt_x = "-log10(Frequency)";
+            opt_y = "log2(Coverage)";
+        } else {
 
 
-    }
+        }
    
-    with(res,plot(eval(parse(text=opt$x)),eval(parse(text=opt$y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab=""));
-    with(subset(res, eval(parse(text=opt$condition))), points(eval(parse(text=opt$x)),eval(parse(text=opt$y)), pch=19,cex=2,col="red"));
-    img_xlab = opt$x;
-    img_ylab = opt$y;
+        with(res,plot(eval(parse(text=opt_x)),eval(parse(text=opt_y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab=""));
+        with(subset(res, eval(parse(text=opt_c))), points(eval(parse(text=opt_x)),eval(parse(text=opt_y)), pch=19,cex=2,col="red"));
+        img_xlab = opt_x;
+        img_ylab = opt_y;
 
-    img_main = basename(fl);
-    mtext(img_main,side=3,line=8,cex=6);
-    mtext(img_xlab,side=1,line=8,cex=6);
-    mtext(img_ylab,side=2,line=8,cex=6);
+        img_main = basename(fl);
+        mtext(img_main,side=3,line=8,cex=6);
+        mtext(img_xlab,side=1,line=8,cex=6);
+        mtext(img_ylab,side=2,line=8,cex=6);
 
-    dev.off();
+        dev.off();
+    }
+
 }
+
+
+rplot(opt_i,opt_c,opt_x,opt_y,opt_m);
