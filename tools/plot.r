@@ -13,7 +13,8 @@
 
 
 # _result
-
+library('stringr');
+library("tools");
 library("optparse");
 option_list = list(
     make_option(
@@ -63,12 +64,50 @@ opt_y = opt$y;
 opt_m = tolower(opt$m);
 
 
+APP_TOOLS_DIRNAME = 'tools'
+APP_TOOLS_DATA_DIRNAME = '_data'
+APP_TOOLS_RESULT_DIRNAME = '_result'
+APP_DATA_DIRNAME = 'data'
+APP_RESULT_DIRNAME = 'result'
+
 
 if (is.null(opt_i)) {
     print_help(opt_parser)
     stop("at least one argument must be supplied (input directory).n", call.=FALSE);
 }
 
+generateResultFilePath <- function(dataFilePath,prefix=""){
+
+    initial.options =  commandArgs(trailingOnly = FALSE)
+    file.arg.name = "--file="
+    script.name = sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
+
+    filename = basename(dataFilePath);
+    fileext = file_ext(dataFilePath); 
+    if (prefix==''){
+       resultFileName = paste('r_',filename,'.pdf',sep="");
+    }else{
+       resultFileName = paste('r_',prefix,filename,'.pdf',sep=''); 
+    } 
+    dataFileAbsPath =file_path_as_absolute(dataFilePath);
+   
+    app_root_dir = dirname(dirname(file_path_as_absolute(script.name)))	
+    app_data_dir = paste(app_root_dir,'/',APP_DATA_DIRNAME,'/',sep="");
+	app_result_dir = paste(app_root_dir ,'/' , APP_RESULT_DIRNAME,sep="");
+
+	result_tmp_dirstr = str_replace_all(dirname(dataFileAbsPath),app_data_dir,'');
+	result_tmp_dirstr = str_replace_all(dirname(dataFileAbsPath),app_result_dir,'');
+
+	resultFileDir = paste(app_result_dir,'/',result_tmp_dirstr,"/",sep="");
+
+    if (!dir.exists(resultFileDir)){
+        dir.create(path=resultFileDir,recursive=TRUE);
+    }
+
+    resultFilePath = paste(resultFileDir,resultFileName,sep="");
+
+    return(resultFilePath);
+}
 
 rplot <- function(opt_i,opt_c,opt_x,opt_y,opt_m){
 
@@ -79,9 +118,11 @@ rplot <- function(opt_i,opt_c,opt_x,opt_y,opt_m){
     img_ylab = ""
 
     for (fl in fls){
+        res_fl = generateResultFilePath(fl);
         res = read.table(fl, header=TRUE);
+        print(res_fl);
         head(res);
-        pdf(paste('_result/',basename(fl),'.pdf',sep=''),width=60,height=40);
+        pdf(res_fl,width=60,height=40);
     # mgp = c(3,4,0):4->xlab(ylab) and x(y) axes distance 
     # mai image margin pdf 
         par(mai=c(5,5,5,5),mgp=c(3, 3, 0));
@@ -112,6 +153,5 @@ rplot <- function(opt_i,opt_c,opt_x,opt_y,opt_m){
     }
 
 }
-
 
 rplot(opt_i,opt_c,opt_x,opt_y,opt_m);
