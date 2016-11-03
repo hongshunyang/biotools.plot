@@ -92,20 +92,19 @@ generateResultFilePath <- function(dataFilePath,prefix=""){
     dataFileAbsPath =file_path_as_absolute(dataFilePath);
    
     app_root_dir = dirname(dirname(file_path_as_absolute(script.name)))	
-    app_data_dir = paste(app_root_dir,'/',APP_DATA_DIRNAME,'/',sep="");
-	app_result_dir = paste(app_root_dir ,'/' , APP_RESULT_DIRNAME,sep="");
+    app_data_dir = file.path(app_root_dir,APP_DATA_DIRNAME);
+	app_result_dir =file.path(app_root_dir , APP_RESULT_DIRNAME);
 
 	result_tmp_dirstr = str_replace_all(dirname(dataFileAbsPath),app_data_dir,'');
 	result_tmp_dirstr = str_replace_all(dirname(dataFileAbsPath),app_result_dir,'');
 
-	resultFileDir = paste(app_result_dir,'/',result_tmp_dirstr,"/",sep="");
-
+	resultFileDir =file.path(app_result_dir,result_tmp_dirstr);
     if (!dir.exists(resultFileDir)){
         dir.create(path=resultFileDir,recursive=TRUE);
     }
 
-    resultFilePath = paste(resultFileDir,resultFileName,sep="");
-
+    resultFilePath =file.path(resultFileDir,resultFileName);
+    
     return(resultFilePath);
 }
 
@@ -153,5 +152,5 @@ rplot <- function(opt_i,opt_c,opt_x,opt_y,opt_m){
     }
 
 }
-
+#generateResultFilePath(opt_i);
 rplot(opt_i,opt_c,opt_x,opt_y,opt_m);
