@@ -1,14 +1,11 @@
 #!/usr/bin/env Rscript
 
-# support batch 
-#./plot.r -i ../result/10262016/ -m default -c repFamilySINE==\'Alu\' -x log10\(Coverage\) -y sqrt\(Frequency\)
 
-#-m default use x,y
-#-m nlog10flog2c
-#-m nlog10csqrtf
+#-m pearson
+#-m kendall
+#-m spearman
 
-# ./plot.r -i ../result/10262016/ -m default -c repFamilySINE==\'Alu\' -x Frequency -y Coverage -p clustername_
-# ./plot.r -i ../result/10262016/ -m nlog10csqrtf -c repFamilySINE==\'Alu\' -p clustername_
+# ./rcor.r -i ../result/10262016/ -m pearson -c ClusterName!=\'-1\'
 
 
 # _result
@@ -33,7 +30,7 @@ option_list = list(
     make_option(
         c('-c',"--condition"),
         type = "character",        
-        default = "repFamilySINE==\'Alu\'",
+        default = "ClusterName!=\'-1\'",
         help ="subset condition",        
         metavar = "character"         
     ),
@@ -115,56 +112,38 @@ generateResultFilePath <- function(dataFilePath,prefix=""){
     return(resultFilePath);
 }
 
-rplot <- function(opt_i,opt_c,opt_x,opt_y,opt_m,opt_p){
+rcor <- function(opt_i,opt_c,opt_x,opt_y,opt_m,opt_p){
 
-    fls = list.files(opt_i,pattern='\\.csv$',full.names=TRUE,recursive=TRUE);
-
-    img_main = ""
-    img_xlab = ""
-    img_ylab = ""
+    fls = list.files(opt_i,pattern='*.csv',full.names=TRUE,recursive=TRUE);
 
     for (fl in fls){
         res_fl = generateResultFilePath(fl,opt_p);
         #res = read.table(fl, header=TRUE);
         res = read.csv(fl, sep='\t',header=TRUE);
         print(res_fl);
-        head(res);
-        pdf(res_fl,width=60,height=40);
-    # mgp = c(3,4,0):4->xlab(ylab) and x(y) axes distance 
-    # mai image margin pdf 
-        par(mai=c(5,5,5,5),mgp=c(3, 3, 0));
+        #res = subset(res, eval(parse(text=opt_c)))
+        #head(res);
 
-        if (opt_m=='nlog10csqrtf') {
-        ## -x -log10  the negative - can not work with -x
-            opt_x = '-log10(Coverage)';
-            opt_y = 'sqrt(Frequency)';
-        } else if (opt_m=='nlog10flog2c'){
-            opt_x = "-log10(Frequency)";
-            opt_y = "log2(Coverage)";
-        } else {
+        sink(res_fl);
 
 
-        }
-   
+        opt_x = 'res$Coverage';
+        opt_y = 'res$Frequency';
 
-        #with(subset(res, eval(parse(text=opt_c))),plot(eval(parse(text=opt_x)),eval(parse(text=opt_y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab="",col="red"));
-        #with(subset(res, eval(parse(text=opt_c))), points(eval(parse(text=opt_x)),eval(parse(text=opt_y)), pch=19,cex=2,col="red"));
+        x = eval(parse(text=opt_x));
+        y = eval(parse(text=opt_y));
 
 
-        with(res,plot(eval(parse(text=opt_x)),eval(parse(text=opt_y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab="",col="red"));
-        with(subset(res, eval(parse(text=opt_c))),plot(eval(parse(text=opt_x)),eval(parse(text=opt_y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab="",col="red"));
+        switch(opt_m,
+            "pearson"=cor.test(x,y,method="pearson"),
+            "kendall"=cor.test(x,y,method="kendall"),
+            "spearman"=cor.test(x,y,method="spearman")
+        );
 
-        img_xlab = opt_x;
-        img_ylab = opt_y;
+        #dev.off();
 
-        img_main = basename(fl);
-        mtext(img_main,side=3,line=8,cex=6);
-        mtext(img_xlab,side=1,line=8,cex=6);
-        mtext(img_ylab,side=2,line=8,cex=6);
-
-        dev.off();
     }
 
 }
 #generateResultFilePath(opt_i);
-rplot(opt_i,opt_c,opt_x,opt_y,opt_m,opt_p);
+rcor(opt_i,opt_c,opt_x,opt_y,opt_m,opt_p)

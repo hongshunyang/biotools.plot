@@ -132,24 +132,48 @@ def _getColDataFromSingleFile(datafileabspath,res_cols):
         inputFileDataSetOrigTitleRow = inputFileDataSetOrig[0]
         for col in inputFileDataSetOrigTitleRow:
             print(i,col)	
-            i+=1	    
+            i+=1
+        ## get chromosome column index
+        chr_column = -1
+
+        for j in range(len(inputFileDataSetOrigTitleRow )):
+            if inputFileDataSetOrigTitleRow[j].lower() == 'chromosome':
+                chr_column = j
+                print('chromosome column:%s' % chr_column)
+            j+=1
+
+        mmXY = list(range(1,20,1))
+        mmXY.extend(['X','Y'])
+    
+        mmXY = list(map(lambda x:str(x),mmXY))
+        # print(chrSet)
+        # sys.exit()
+
         inputFileColIndexMax = len(inputFileDataSetOrigTitleRow)-1
         
-        res_cols = [x for x in res_cols if x < inputFileColIndexMax]
+        res_cols = [x for x in res_cols if x <= inputFileColIndexMax]
         print("check valid column index")
         print(res_cols)
-        colDataSet=[]       
+        colDataSet=[]
+        line=0
         for cl in inputFileDataSetOrig:
             row=[]
+
+            if (line>0) and (str(cl[chr_column]).replace(' ','') not in mmXY):
+                continue
+            
+            ##repClassLINE:2 Alu
+            # if cl[2].lower()!='alu':
+                # continue
+
             for idx in range(len(cl)):
                 if idx in res_cols:
-                    ### process item log2
-                    # no value is -1
                     if cl[idx]=='':
                         cl[idx]=-1
                     row.append(cl[idx])
-            
-            colDataSet.append(row)
+            line+=1 
+            if row !=[]:
+                colDataSet.append(row)
                 
     saveDataToCSV([],colDataSet,resultFilePath)	
 
