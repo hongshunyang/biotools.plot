@@ -118,7 +118,8 @@ rplot <- function(opt_i,opt_c,opt_x,opt_y,opt_m){
 
     for (fl in fls){
         res_fl = generateResultFilePath(fl);
-        res = read.table(fl, header=TRUE);
+        #res = read.table(fl, header=TRUE);
+        res = read.csv(fl, sep='\t',header=TRUE);
         print(res_fl);
         head(res);
         pdf(res_fl,width=60,height=40);
