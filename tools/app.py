@@ -48,7 +48,7 @@ def saveDataToCSV(title,data,filePath,fmt=''):
 	file_handle = open(filePath,'w')
 	
 	if fmt=='':
-		csv_writer = csv.writer(file_handle,delimiter=' ')
+		csv_writer = csv.writer(file_handle,delimiter='\t')
 	else:
 		csv_writer = csv.writer(file_handle,delimiter=fmt)
 	
