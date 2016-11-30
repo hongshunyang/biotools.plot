@@ -147,12 +147,16 @@ rplot <- function(opt_i,opt_c,opt_x,opt_y,opt_m,opt_p){
         }
    
 
-        #with(subset(res, eval(parse(text=opt_c))),plot(eval(parse(text=opt_x)),eval(parse(text=opt_y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab="",col="red"));
+        #with(subset(res, eval(parse(text=opt_c))),plot(eval(parse(text=opt_x)),eval(parse(text=opt_y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab=""));
         #with(subset(res, eval(parse(text=opt_c))), points(eval(parse(text=opt_x)),eval(parse(text=opt_y)), pch=19,cex=2,col="red"));
 
 
-        with(res,plot(eval(parse(text=opt_x)),eval(parse(text=opt_y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab="",col="red"));
+        #with(res,plot(eval(parse(text=opt_x)),eval(parse(text=opt_y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab=""));
+        #with(subset(res, eval(parse(text=opt_c))),points(eval(parse(text=opt_x)),eval(parse(text=opt_y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab="",col="red"));
         with(subset(res, eval(parse(text=opt_c))),plot(eval(parse(text=opt_x)),eval(parse(text=opt_y)),pch=19,cex=2,cex.axis=4,main="",xlab="",ylab="",col="red"));
+
+        #label point
+        with(subset(res, eval(parse(text=opt_c))),text(eval(parse(text=opt_x)),eval(parse(text=opt_y)),labels=Index, cex= 0.7, pos=3));
 
         img_xlab = opt_x;
         img_ylab = opt_y;
