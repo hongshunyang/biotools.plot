@@ -159,6 +159,13 @@ def _getColDataFromSingleFile(datafileabspath,res_cols):
         for cl in inputFileDataSetOrig:
             row=[]
 
+            ## Insert Index Column
+            if line ==0:
+                row.append('Index')
+            else:
+                row.append(line)
+
+
             if (line>0) and (str(cl[chr_column]).replace(' ','') not in mmXY):
                 continue
             
