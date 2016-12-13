@@ -170,8 +170,11 @@ def _getColDataFromSingleFile(datafileabspath,res_cols):
                 continue
             
             ##repClassLINE:2 Alu
-            # if cl[2].lower()!='alu':
-                # continue
+            if line>0 and cl[2].lower()!='alu':
+                continue
+            ##clustername !='' 
+            if line>0 and cl[0]=='':
+                continue
 
             for idx in range(len(cl)):
                 if idx in res_cols:
